@@ -7,7 +7,7 @@ const registerUserControlDuplicated = (user, name, email, phone) => {
             return "El email ya está registrado por otro usuario.";
         }
         if (user.phone == phone) {
-            return "El número teléfono ya está registrado por otro usuario.";
+            return "El número de teléfono ya está registrado por otro usuario.";
         }
     }
     return null;

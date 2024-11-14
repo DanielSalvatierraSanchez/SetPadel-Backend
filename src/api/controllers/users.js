@@ -26,13 +26,14 @@ const registerUser = async (req, res, next) => {
         }
 
         const newUser = new User(req.body);
+        const token = generateToken(newUser._id);
         if (newUser.role === "admin") {
             return res.status(400).json({ message: "No tienes permisos para tener el rol de Administrador." });
         }
 
         const userSaved = await newUser.save();
         req.file ? (newUser.image = req.file.path) : res.status(400).json({ message: "No ha sido introducida ninguna imagen." });
-        return res.status(201).json({ message: "Usuario creado correctamente.", userSaved });
+        return res.status(201).json({ message: "Usuario creado correctamente.", userSaved, token });
     } catch (error) {
         return res.status(400).json(`❌ Fallo en registerUser: ${error.message}`);
     }
@@ -40,16 +41,18 @@ const registerUser = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
     try {
-        const { userData, password } = req.body;
-        const userLogin = await User.findOne({ $or: [{ name: userData }, { email: userData }] });
+        const { userData, email, password } = req.body;
+        const userLogin = await User.findOne({ 
+            //$or: [{ name: userData }, { email: userData }] });
+            email });
         if (!userLogin) {
-            return res.status(400).json({ message: "Usuario o contraseña incorrectos." });
+            return res.status(400).json({ message: "Email o Contraseña incorrectos." });
         }
         if (bcrypt.compareSync(password, userLogin.password)) {
             const token = generateToken(userLogin._id);
             return res.status(200).json({ message: "LOGIN realizado correctamente.", userLogin, token });
         } else {
-            return res.status(400).json({ message: "Usuario o contraseña incorrectos." });
+            return res.status(400).json({ message: "Email o Contraseña incorrectos." });
         }
     } catch (error) {
         return res.status(400).json(`❌ Fallo en loginUser: ${error.message}`);
