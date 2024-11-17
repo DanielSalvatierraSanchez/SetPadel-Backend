@@ -19,8 +19,8 @@ const registerUser = async (req, res, next) => {
             return res.status(400).json({ message: userParamsError });
         }
 
-        const userDuplicated = await User.findOne({ $or: [{ name }, { email }, { phone }] });
-        const errorDuplicated = registerUserControlDuplicated(userDuplicated, name, email, phone);
+        const userDuplicated = await User.findOne({ $or: [{ email }, { phone }] });
+        const errorDuplicated = registerUserControlDuplicated(userDuplicated, email, phone);
         if (userDuplicated) {
             return res.status(400).json({ message: errorDuplicated });
         }
@@ -32,10 +32,10 @@ const registerUser = async (req, res, next) => {
         }
 
         const userSaved = await newUser.save();
-        req.file ? (newUser.image = req.file.path) : res.status(400).json({ message: "No ha sido introducida ninguna imagen." });
+        // req.file ? (newUser.image = req.file.path) : res.status(400).json({ message: "No ha sido introducida ninguna imagen." });
         return res.status(201).json({ message: "Usuario creado correctamente.", userSaved, token });
     } catch (error) {
-        return res.status(400).json(`❌ Fallo en registerUser: ${error.message}`);
+        return res.status(400).json({ message: "❌ Fallo en registerUser:" }, error);
     }
 };
 
@@ -55,7 +55,7 @@ const loginUser = async (req, res, next) => {
             return res.status(400).json({ message: "Email o Contraseña incorrectos." });
         }
     } catch (error) {
-        return res.status(400).json(`❌ Fallo en loginUser: ${error.message}`);
+        return res.status(400).json({ message: "❌ Fallo en loginUser:" }, error);
     }
 };
 
@@ -65,7 +65,7 @@ const getAllUsers = async (req, res, next) => {
         const allUsers = await User.find().select(selectUserData(user)).populate("padelMatches");
         return res.status(200).json({ message: "Listado completo de usuarios:", allUsers });
     } catch (error) {
-        return res.status(400).json(`❌ Fallo en getAllUsers: ${error.message}`);
+        return res.status(400).json({ message: "❌ Fallo en getAllUsers:" }, error);
     }
 };
 
@@ -78,7 +78,7 @@ const getUserByName = async (req, res, next) => {
             .populate("padelMatches");
         resultUsersByName(res, searchUserByName, name);
     } catch (error) {
-        return res.status(400).json(`❌ Fallo en getUserByName: ${error.message}`);
+        return res.status(400).json({ message: "❌ Fallo en getUserByName:" }, error);
     }
 };
 
@@ -92,7 +92,7 @@ const getUserByPhone = async (req, res, next) => {
         const searchUserByPhone = await User.find({ phone }).select(selectUserData(user)).populate("padelMatches");
         resultUsersByPhone(res, searchUserByPhone, phone);
     } catch (error) {
-        return res.status(400).json(`❌ Fallo en getUserByPhone: ${error.message}`);
+        return res.status(400).json({ message: "❌ Fallo en getUserByPhone:" }, error);
     }
 };
 
@@ -134,7 +134,7 @@ const updateUser = async (req, res, next) => {
         const userUpdated = await User.findByIdAndUpdate(id, userModify, { new: true });
         return res.status(200).json({ message: "Datos del usuario actualizados correctamente.", userUpdated });
     } catch (error) {
-        return res.status(400).json(`❌ Fallo en updateUser: ${error.message}`);
+        return res.status(400).json({ message: "❌ Fallo en updateUser:" }, error);
     }
 };
 
@@ -152,7 +152,7 @@ const deleteUser = async (req, res, next) => {
         deleteImage(userDeleted.image);
         resultUserDeleted(res, userDeleted);
     } catch (error) {
-        return res.status(400).json(`❌ Fallo en deleteUser: ${error.message}`);
+        return res.status(400).json({ message: "❌ Fallo en deleteUser:" }, error);
     }
 };
 

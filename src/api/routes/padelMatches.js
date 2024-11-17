@@ -6,7 +6,7 @@ const { createPadelMatch, getPadelMatchByDay, getPadelMatchByAuthor, getPadelMat
 padelMatchesRoutes.post("/register", isAuth, uploadFolders("Padel_Matches_Of_Appadel").single("image"), createPadelMatch);
 padelMatchesRoutes.get("/getByDay/:day", isAuth, getPadelMatchByDay);
 padelMatchesRoutes.get("/getByAuthor/:author", isAuth, getPadelMatchByAuthor);
-padelMatchesRoutes.get("/", getPadelMatches); // isAuth,
+padelMatchesRoutes.get("/", isAuth, getPadelMatches);
 padelMatchesRoutes.put("/update/:id", isAuth, updatePadelMatch);
 padelMatchesRoutes.delete("/delete/:id", isAuth, deletePadelMatch);
 

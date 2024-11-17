@@ -17,7 +17,7 @@ const isAdmin = async (req, res, next) => {
             return res.status(400).json({ message: "Necesitas tener permisos de Administrador." });
         }
     } catch (error) {
-        return res.status(400).json("❌ No tienes permisos.");
+        return res.status(400).json({ message: "❌ No tienes permisos." }); 
     }
 };
 
