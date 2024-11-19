@@ -1,13 +1,13 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const { generateToken } = require("../../utils/jwt");
+const { idAndRoleChecked } = require("../../utils/checkId&Role");
+const { deleteImage } = require("../../utils/deleteImage");
 const { resultUsersByName } = require("../../utils/Users/resultUsersByName");
 const { resultUsersByPhone } = require("../../utils/Users/resultUsersByPhone");
 const { resultUserDeleted } = require("../../utils/Users/resultUserDeleted");
 const { registerUserControlDuplicated } = require("../../utils/Users/registerUserControlDuplicated");
 const { selectUserData } = require("../../utils/Users/selectUserData");
-const { idAndRoleChecked } = require("../../utils/checkId&Role");
-const { deleteImage } = require("../../utils/deleteImage");
 const { ParamsErrorOfUser } = require("../../utils/Users/ParamsErrorOfUser");
 
 const registerUser = async (req, res, next) => {
@@ -16,26 +16,31 @@ const registerUser = async (req, res, next) => {
 
         const userParamsError = ParamsErrorOfUser(name, password, phone, email);
         if (userParamsError) {
+            deleteImage(req.file.path);
             return res.status(400).json({ message: userParamsError });
         }
 
         const userDuplicated = await User.findOne({ $or: [{ email }, { phone }] });
         const errorDuplicated = registerUserControlDuplicated(userDuplicated, email, phone);
         if (userDuplicated) {
+            deleteImage(req.file.path);
             return res.status(400).json({ message: errorDuplicated });
         }
 
         const newUser = new User(req.body);
-        const token = generateToken(newUser._id);
 
         //todo NO DEJO QUE NADIE PUEDA REGISTRARSE NADIE COMO ADMIN SI NO LO PERMITO YO
         // if (newUser.role === "admin") {
         //     return res.status(400).json({ message: "No tienes permisos para tener el rol de Administrador." });
         // }
 
+        if (req.file) {
+            newUser.image = req.file.path;
+        }
+        
         const userSaved = await newUser.save();
-        //todo NO OBLIGO A PONER FOTO
-        // req.file ? (newUser.image = req.file.path) : res.status(400).json({ message: "No ha sido introducida ninguna imagen." });
+        const token = generateToken(newUser._id);
+        
         return res.status(201).json({ message: "Usuario creado correctamente.", userSaved, token });
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en registerUser:" }, error);
