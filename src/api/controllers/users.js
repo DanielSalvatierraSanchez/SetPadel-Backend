@@ -1,14 +1,14 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const { generateToken } = require("../../utils/jwt");
-const { resultUsersByName } = require("../../utils/resultUsersByName");
-const { resultUsersByPhone } = require("../../utils/resultUsersByPhone");
-const { resultUserDeleted } = require("../../utils/resultUserDeleted");
-const { registerUserControlDuplicated } = require("../../utils/registerUserControlDuplicated");
-const { selectUserData } = require("../../utils/selectUserData");
+const { resultUsersByName } = require("../../utils/Users/resultUsersByName");
+const { resultUsersByPhone } = require("../../utils/Users/resultUsersByPhone");
+const { resultUserDeleted } = require("../../utils/Users/resultUserDeleted");
+const { registerUserControlDuplicated } = require("../../utils/Users/registerUserControlDuplicated");
+const { selectUserData } = require("../../utils/Users/selectUserData");
 const { idAndRoleChecked } = require("../../utils/checkId&Role");
 const { deleteImage } = require("../../utils/deleteImage");
-const { ParamsErrorOfUser } = require("../../utils/ParamsErrorOfUser");
+const { ParamsErrorOfUser } = require("../../utils/Users/ParamsErrorOfUser");
 
 const registerUser = async (req, res, next) => {
     try {

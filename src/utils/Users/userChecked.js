@@ -1,4 +1,4 @@
-const { idAndRoleChecked } = require("./checkId&Role");
+const { idAndRoleChecked } = require("../checkId&Role");
 
 const userChecked = (id, user) => {
     const userChecked = idAndRoleChecked(id, user);
