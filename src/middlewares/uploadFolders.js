@@ -7,9 +7,8 @@ const foldersOfStorage = (folderName) => {
         cloudinary: cloudinary,
         params: {
             folder: folderName,
-            allowedFormats: ["jpg", "png", "jpeg", "gif", "webp", "avif"]
-            // transformation: [{ fetch_format: "webp", quality: "auto:good" }]
-            // probarla con arrays fields: 
+            allowedFormats: ["jpg", "png", "jpeg", "gif", "webp", "avif"],
+            transformation: [{ fetch_format: "webp", quality: "auto" }]
         }
     });
 };

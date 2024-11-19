@@ -5,7 +5,6 @@ const userChecked = (id, user) => {
     if (userChecked) {
         return userChecked;
     }
-    return null;
 };
 
 module.exports = { userChecked };

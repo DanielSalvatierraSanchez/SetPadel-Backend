@@ -11,6 +11,5 @@ const ParamsErrorOfUser = (name, password, phone, email) => {
     if (phone.length !== 9) {
         return "El número de teléfono debe de tener 9 dígitos.";
     }
-    return null;
 };
 module.exports = { ParamsErrorOfUser };

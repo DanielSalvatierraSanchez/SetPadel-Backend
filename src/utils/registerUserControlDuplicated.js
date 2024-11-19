@@ -1,8 +1,5 @@
-const registerUserControlDuplicated = (user, name, email, phone) => {
+const registerUserControlDuplicated = (user, email, phone) => {
     if (user) {
-        if (user.name == name) {
-            return "El nombre ya está en uso por otro usuario.";
-        }
         if (user.email == email) {
             return "El email ya está registrado por otro usuario.";
         }
@@ -10,7 +7,6 @@ const registerUserControlDuplicated = (user, name, email, phone) => {
             return "El número de teléfono ya está registrado por otro usuario.";
         }
     }
-    return null;
 };
 
 module.exports = { registerUserControlDuplicated };

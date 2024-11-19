@@ -27,11 +27,14 @@ const registerUser = async (req, res, next) => {
 
         const newUser = new User(req.body);
         const token = generateToken(newUser._id);
-        if (newUser.role === "admin") {
-            return res.status(400).json({ message: "No tienes permisos para tener el rol de Administrador." });
-        }
+
+        //todo NO DEJO QUE NADIE PUEDA REGISTRARSE NADIE COMO ADMIN SI NO LO PERMITO YO
+        // if (newUser.role === "admin") {
+        //     return res.status(400).json({ message: "No tienes permisos para tener el rol de Administrador." });
+        // }
 
         const userSaved = await newUser.save();
+        //todo NO OBLIGO A PONER FOTO
         // req.file ? (newUser.image = req.file.path) : res.status(400).json({ message: "No ha sido introducida ninguna imagen." });
         return res.status(201).json({ message: "Usuario creado correctamente.", userSaved, token });
     } catch (error) {
@@ -41,10 +44,9 @@ const registerUser = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
     try {
-        const { userData, email, password } = req.body;
-        const userLogin = await User.findOne({ 
-            //$or: [{ name: userData }, { email: userData }] });
-            email });
+        const { email, password } = req.body;
+        const userLogin = await User.findOne({ email });
+
         if (!userLogin) {
             return res.status(400).json({ message: "Email o Contraseña incorrectos." });
         }
@@ -99,7 +101,7 @@ const getUserByPhone = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, email, password, phone } = req.body;
+        const { email, password, phone } = req.body;
         const user = req.user;
 
         const userChecked = idAndRoleChecked(id, user);
@@ -107,9 +109,9 @@ const updateUser = async (req, res, next) => {
             return res.status(400).json({ message: userChecked });
         }
 
-        const userDuplicated = await User.findOne({ $or: [{ name }, { email }, { phone }] });
+        const userDuplicated = await User.findOne({ $or: [{ email }, { phone }] });
 
-        const errorDuplicated = registerUserControlDuplicated(userDuplicated, name, email, phone);
+        const errorDuplicated = registerUserControlDuplicated(userDuplicated, email, phone);
         if (userDuplicated) {
             return res.status(400).json({ message: errorDuplicated });
         }

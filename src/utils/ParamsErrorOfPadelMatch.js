@@ -19,6 +19,5 @@ const ParamsErrorOfPadelMatch = (day, month, hour, place) => {
     if (place !== "Indoor" && place !== "Outdoor") {
         return "Introduce la zona de juego que corresponda: Indoor ó Outdoor";
     }
-    return null;
 };
 module.exports = { ParamsErrorOfPadelMatch };
