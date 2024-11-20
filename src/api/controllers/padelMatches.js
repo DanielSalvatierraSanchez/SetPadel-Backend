@@ -81,6 +81,7 @@ const updatePadelMatch = async (req, res, next) => {
         if (!oldPadelMatch) {
             return res.status(400).json({ message: "Partido no encontrado." });
         }
+
         const authorChecked = authorIdChecked(user, oldPadelMatch);
         if (authorChecked) {
             return res.status(400).json({ message: authorChecked });
