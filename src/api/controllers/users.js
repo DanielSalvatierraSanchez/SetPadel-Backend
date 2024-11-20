@@ -37,10 +37,10 @@ const registerUser = async (req, res, next) => {
         if (req.file) {
             newUser.image = req.file.path;
         }
-        
+
         const userSaved = await newUser.save();
         const token = generateToken(newUser._id);
-        
+
         return res.status(201).json({ message: "Usuario creado correctamente.", userSaved, token });
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en registerUser:" }, error);

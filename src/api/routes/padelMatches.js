@@ -7,7 +7,7 @@ padelMatchesRoutes.post("/register", isAuth, uploadFolders("Padel_Matches_Of_App
 padelMatchesRoutes.get("/getByDay/:day", isAuth, getPadelMatchByDay);
 padelMatchesRoutes.get("/getByAuthor/:author", isAuth, getPadelMatchByAuthor);
 padelMatchesRoutes.get("/", isAuth, getPadelMatches);
-padelMatchesRoutes.put("/update/:id", isAuth, updatePadelMatch);
+padelMatchesRoutes.put("/update/:id", isAuth, uploadFolders("Padel_Matches_Of_Appadel").single("image"), updatePadelMatch);
 padelMatchesRoutes.delete("/delete/:id", isAuth, deletePadelMatch);
 
 module.exports = padelMatchesRoutes;

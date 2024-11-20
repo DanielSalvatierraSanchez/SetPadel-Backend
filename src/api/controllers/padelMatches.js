@@ -13,8 +13,13 @@ const createPadelMatch = async (req, res, next) => {
 
         const padelMatchParamsError = ParamsErrorOfPadelMatch(day, month, hour, place);
         if (padelMatchParamsError) {
+            deleteImage(req.file.path);
             return res.status(400).json({ message: padelMatchParamsError });
         }
+
+        //TODO Revisar como gestionar duplicados al crear partido
+        // const padelMatchDuplicated = await PadelMatch.find({ $or: [{ day }, { month }, { hour }, { author }] });
+        // padelMatchDuplicated ? res.status(400).json({ message: `Ya existe un partido el dia ${day} a las ${hour} creado por ${author}.` }) : padelMatchDuplicated;
 
         const authorId = await User.findById(req.user);
 
@@ -47,6 +52,9 @@ const getPadelMatchByDay = async (req, res, next) => {
     try {
         const { day } = req.params;
         const findPadelMatch = await PadelMatch.find({ day });
+        // ({ date: new RegExp(date, "i") });
+        //TODO Revisar arriba como filtrar por un dia en concreto
+
         resultPadelMatchesByDay(res, findPadelMatch, day);
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en getPadelMatchByDay:", error });
@@ -66,20 +74,26 @@ const getPadelMatchByAuthor = async (req, res, next) => {
 const updatePadelMatch = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { title, location, day, month, hour, place, image } = req.body;
+        const { day, month, hour, place } = req.body;
         const user = req.user;
 
-        const userChecked = idAndRoleChecked(user);
+        const userChecked = idAndRoleChecked(id, user);
         if (userChecked) {
             return res.status(400).json({ message: userChecked });
         }
 
-        ParamsErrorOfPadelMatch(day, month, hour, place);
-
         const oldPadelMatch = await PadelMatch.findById(id);
-        // if (!oldPadelMatch) {
-        //     return res.status(400).json({ message: "Partido no encontrado." });
-        // }
+        if (!oldPadelMatch) {
+            return res.status(400).json({ message: "Partido no encontrado." });
+        }
+
+        const padelMatchParamsError = ParamsErrorOfPadelMatch(day, month, hour, place);
+        if (padelMatchParamsError) {
+            if (req.file) {
+                deleteImage(req.file.path);
+            }
+            return res.status(400).json({ message: padelMatchParamsError });
+        }
 
         const padelMatchModify = new PadelMatch(req.body);
         padelMatchModify._id = id;
