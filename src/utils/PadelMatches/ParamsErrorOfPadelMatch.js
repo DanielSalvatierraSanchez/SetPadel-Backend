@@ -25,4 +25,5 @@ const ParamsErrorOfPadelMatch = (day, month, hour, place) => {
         }
     }
 };
+
 module.exports = { ParamsErrorOfPadelMatch };

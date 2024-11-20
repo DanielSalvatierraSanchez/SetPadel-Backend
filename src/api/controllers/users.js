@@ -29,11 +29,6 @@ const registerUser = async (req, res, next) => {
 
         const newUser = new User(req.body);
 
-        //todo NO DEJO QUE NADIE PUEDA REGISTRARSE NADIE COMO ADMIN SI NO LO PERMITO YO
-        // if (newUser.role === "admin") {
-        //     return res.status(400).json({ message: "No tienes permisos para tener el rol de Administrador." });
-        // }
-
         if (req.file) {
             newUser.image = req.file.path;
         }
@@ -115,7 +110,6 @@ const updateUser = async (req, res, next) => {
         }
 
         const userDuplicated = await User.findOne({ $or: [{ email }, { phone }] });
-
         const errorDuplicated = registerUserControlDuplicated(userDuplicated, email, phone);
         if (userDuplicated) {
             return res.status(400).json({ message: errorDuplicated });
@@ -134,7 +128,9 @@ const updateUser = async (req, res, next) => {
         }
 
         if (req.file) {
-            deleteImage(oldUser.image);
+            if (oldUser.image) {
+                deleteImage(oldUser.image);
+            }
             userModify.image = req.file.path;
         }
 

@@ -1,4 +1,4 @@
-const { idAndRoleChecked } = require("../../utils/checkId&Role");
+const { idAndRoleChecked, authorIdChecked } = require("../../utils/checkId&Role");
 const { deleteImage } = require("../../utils/deleteImage");
 const { ParamsErrorOfPadelMatch } = require("../../utils/PadelMatches/ParamsErrorOfPadelMatch");
 const { resultPadelMatchDeleted } = require("../../utils/PadelMatches/resultPadelMatchDeleted");
@@ -77,14 +77,13 @@ const updatePadelMatch = async (req, res, next) => {
         const { day, month, hour, place } = req.body;
         const user = req.user;
 
-        const userChecked = idAndRoleChecked(id, user);
-        if (userChecked) {
-            return res.status(400).json({ message: userChecked });
-        }
-
         const oldPadelMatch = await PadelMatch.findById(id);
         if (!oldPadelMatch) {
             return res.status(400).json({ message: "Partido no encontrado." });
+        }
+        const authorChecked = authorIdChecked(user, oldPadelMatch);
+        if (authorChecked) {
+            return res.status(400).json({ message: authorChecked });
         }
 
         const padelMatchParamsError = ParamsErrorOfPadelMatch(day, month, hour, place);
@@ -100,7 +99,9 @@ const updatePadelMatch = async (req, res, next) => {
         padelMatchModify.author = oldPadelMatch.author;
 
         if (req.file) {
-            deleteImage(oldPadelMatch.image);
+            if (oldPadelMatch.image) {
+                deleteImage(oldPadelMatch.image);
+            }
             padelMatchModify.image = req.file.path;
         }
 
