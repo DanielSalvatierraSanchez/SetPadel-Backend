@@ -9,17 +9,13 @@ const User = require("../models/users");
 
 const createPadelMatch = async (req, res, next) => {
     try {
-        const { day, month, hour, place, author } = req.body;
+        const { day, month, hour, place } = req.body;
 
         const padelMatchParamsError = ParamsErrorOfPadelMatch(day, month, hour, place);
         if (padelMatchParamsError) {
             deleteImage(req.file.path);
             return res.status(400).json({ message: padelMatchParamsError });
         }
-
-        //TODO Revisar como gestionar duplicados al crear partido
-        // const padelMatchDuplicated = await PadelMatch.find({ $or: [{ day }, { month }, { hour }, { author }] });
-        // padelMatchDuplicated ? res.status(400).json({ message: `Ya existe un partido el dia ${day} a las ${hour} creado por ${author}.` }) : padelMatchDuplicated;
 
         const authorId = await User.findById(req.user);
 
@@ -52,9 +48,6 @@ const getPadelMatchByDay = async (req, res, next) => {
     try {
         const { day } = req.params;
         const findPadelMatch = await PadelMatch.find({ day });
-        // ({ date: new RegExp(date, "i") });
-        //TODO Revisar arriba como filtrar por un dia en concreto
-
         resultPadelMatchesByDay(res, findPadelMatch, day);
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en getPadelMatchByDay:", error });
