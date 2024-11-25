@@ -1,4 +1,4 @@
-const PadelMatch = require("../api/models/padelMatches");
+const PadelMatch = require("../../api/models/padelMatches");
 
 const getPagination = async (query) => {
     const totalPages = await PadelMatch.countDocuments(query);

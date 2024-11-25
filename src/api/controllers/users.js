@@ -13,6 +13,16 @@ const { ParamsErrorOfUser } = require("../../utils/Users/ParamsErrorOfUser");
 const registerUser = async (req, res, next) => {
     try {
         const { name, email, password, phone } = req.body;
+        console.log(req.body);
+
+        const userDuplicated = await User.findOne({ $or: [{ email }, { phone }] });
+        const errorDuplicated = registerUserControlDuplicated(userDuplicated, email, phone);
+        if (userDuplicated) {
+            if (req.file) {
+                deleteImage(req.file?.path);
+            }
+            return res.status(400).json({ message: errorDuplicated });
+        }
 
         const userParamsError = ParamsErrorOfUser(name, password, phone, email);
         if (userParamsError) {
@@ -20,24 +30,18 @@ const registerUser = async (req, res, next) => {
             return res.status(400).json({ message: userParamsError });
         }
 
-        const userDuplicated = await User.findOne({ $or: [{ email }, { phone }] });
-        const errorDuplicated = registerUserControlDuplicated(userDuplicated, email, phone);
-        if (userDuplicated) {
-            deleteImage(req.file.path);
-            return res.status(400).json({ message: errorDuplicated });
-        }
-
         const newUser = new User(req.body);
-
         if (req.file) {
             newUser.image = req.file.path;
         }
-
-        const userSaved = await newUser.save();
         const token = generateToken(newUser._id);
+        
+        const userSaved = await newUser.save();
 
-        return res.status(201).json({ message: "Usuario creado correctamente.", userSaved, token });
+        return res.status(201).json({ message: "Usuario creado correctamente.", user: userSaved, token });
     } catch (error) {
+        console.log(error);
+        
         return res.status(400).json({ message: "❌ Fallo en registerUser:" }, error);
     }
 };
@@ -46,13 +50,14 @@ const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const userLogin = await User.findOne({ email });
-
+        console.log(req.body);
+        
         if (!userLogin) {
             return res.status(400).json({ message: "Email o Contraseña incorrectos." });
         }
         if (bcrypt.compareSync(password, userLogin.password)) {
             const token = generateToken(userLogin._id);
-            return res.status(200).json({ message: "LOGIN realizado correctamente.", userLogin, token });
+            return res.status(200).json({ message: "LOGIN realizado correctamente.", user: userLogin, token });
         } else {
             return res.status(400).json({ message: "Email o Contraseña incorrectos." });
         }
