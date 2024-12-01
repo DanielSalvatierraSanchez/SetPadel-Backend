@@ -13,7 +13,6 @@ const { ParamsErrorOfUser } = require("../../utils/Users/ParamsErrorOfUser");
 const registerUser = async (req, res, next) => {
     try {
         const { name, email, password, phone } = req.body;
-        console.log(req.body);
 
         const userDuplicated = await User.findOne({ $or: [{ email }, { phone }] });
         const errorDuplicated = registerUserControlDuplicated(userDuplicated, email, phone);
@@ -26,7 +25,7 @@ const registerUser = async (req, res, next) => {
 
         const userParamsError = ParamsErrorOfUser(name, password, phone, email);
         if (userParamsError) {
-            deleteImage(req.file.path);
+            deleteImage(req.file?.path);
             return res.status(400).json({ message: userParamsError });
         }
 
@@ -50,7 +49,6 @@ const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const userLogin = await User.findOne({ email });
-        console.log(req.body);
         
         if (!userLogin) {
             return res.status(400).json({ message: "Email o Contraseña incorrectos." });

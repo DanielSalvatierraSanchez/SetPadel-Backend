@@ -10,7 +10,7 @@ const padelMatchSchema = new mongoose.Schema(
         hour: { type: String, required: true, trim: true, match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/] }, // probar con Number , 'El formato de la hora debe ser HH:mm'
         place: { type: String, required: true, enum: ["Indoor", "Outdoor"] },
         image: { type: String, default: "../../assets/pista.jpg" },
-        author: [{ type: mongoose.Types.ObjectId, ref: "users" }] 
+        author: [{ type: mongoose.Types.ObjectId, ref: "users" }]
         // participantes max: 4
     },
     {

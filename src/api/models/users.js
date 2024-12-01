@@ -3,9 +3,9 @@ const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
     {
-        name: { type: String, required: true, trim: true },
+        name: { type: String, required: true, trim: true, minLength: 2, maxLength: 20 },
         email: { type: String, required: true, trim: true, match: [/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$/] },
-        password: { type: String, required: true, trim: true },
+        password: { type: String, required: true, trim: true, minLength: 8, maxLength: 16 },
         phone: { type: Number, required: true, trim: true },
         role: { type: String, enum: ["admin", "user"], default: "user" },
         image: { type: String, default: "../../assets/avatar.png" },
