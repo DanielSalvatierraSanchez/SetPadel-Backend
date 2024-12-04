@@ -25,7 +25,9 @@ const registerUser = async (req, res, next) => {
 
         const userParamsError = ParamsErrorOfUser(name, password, phone, email);
         if (userParamsError) {
-            deleteImage(req.file?.path);
+            if (req.file) {
+                deleteImage(req.file?.path);
+            }
             return res.status(400).json({ message: userParamsError });
         }
 

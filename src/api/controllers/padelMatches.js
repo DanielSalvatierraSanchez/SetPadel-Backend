@@ -13,7 +13,9 @@ const createPadelMatch = async (req, res, next) => {
 
         const padelMatchParamsError = ParamsErrorOfPadelMatch(day, month, hour, place);
         if (padelMatchParamsError) {
-            deleteImage(req.file.path);
+            if (req.file) {
+                deleteImage(req.file?.path);
+            }
             return res.status(400).json({ message: padelMatchParamsError });
         }
 
@@ -83,7 +85,7 @@ const updatePadelMatch = async (req, res, next) => {
         const padelMatchParamsError = ParamsErrorOfPadelMatch(day, month, hour, place);
         if (padelMatchParamsError) {
             if (req.file) {
-                deleteImage(req.file.path);
+                deleteImage(req.file?.path);
             }
             return res.status(400).json({ message: padelMatchParamsError });
         }
