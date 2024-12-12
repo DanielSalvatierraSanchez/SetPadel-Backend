@@ -106,7 +106,7 @@ const getUserByPhone = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { email, password, phone } = req.body;
+        const { email, password, phone, padelMatches } = req.body;
         const user = req.user;
 
         const userChecked = idAndRoleChecked(id, user);

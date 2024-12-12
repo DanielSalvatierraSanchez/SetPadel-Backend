@@ -9,9 +9,9 @@ const User = require("../models/users");
 
 const createPadelMatch = async (req, res, next) => {
     try {
-        const { day, month, hour, place } = req.body;
+        const { title, location, date, place } = req.body;
 
-        const padelMatchParamsError = ParamsErrorOfPadelMatch(day, month, hour, place);
+        const padelMatchParamsError = ParamsErrorOfPadelMatch(title, location, date, place);
         if (padelMatchParamsError) {
             if (req.file) {
                 deleteImage(req.file?.path);
@@ -20,7 +20,6 @@ const createPadelMatch = async (req, res, next) => {
         }
 
         const authorId = await User.findById(req.user);
-
         const newPadelMatch = new PadelMatch({ ...req.body, author: authorId._id });
 
         if (req.file) {
@@ -31,6 +30,45 @@ const createPadelMatch = async (req, res, next) => {
         return res.status(201).json({ message: "Partido creado.", padelMatchSaved });
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en createPadelMatch:", error });
+    }
+};
+
+const joinUserToPadelMatch = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        const padelMatch = await PadelMatch.findById(id);
+        if (!padelMatch) {
+            return res.status(400).json({ message: "Partido no encontrado." });
+        }
+
+        if (padelMatch.isCompleted) {
+            return res.status(400).json({ message: "El partido ya está completo." });
+        }
+
+        if (padelMatch.players.includes(userId)) {
+            return res.status(400).json({ message: "Ya estás inscrito en este partido." });
+        }
+
+        if (padelMatch.players.length >= 4) {
+            padelMatch.isCompleted = true;
+            await padelMatch.save();
+            return res.status(200).json({ message: "Ya hay 4 jugadores apuntados.", padelMatch });
+        }
+
+        padelMatch.players.push(userId);
+
+        if (padelMatch.players.length === 4) {
+            padelMatch.isCompleted = true;
+        }
+
+        const updatePadelMatch = await padelMatch.save();
+
+        return res.status(200).json({ message: "Te has inscrito correctamente al partido.", updatePadelMatch });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: "❌ Fallo en joinPadelMatch:" });
     }
 };
 
@@ -46,15 +84,15 @@ const getPadelMatches = async (req, res, next) => {
     }
 };
 
-const getPadelMatchByDay = async (req, res, next) => {
-    try {
-        const { day } = req.params;
-        const findPadelMatch = await PadelMatch.find({ day });
-        resultPadelMatchesByDay(res, findPadelMatch, day);
-    } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en getPadelMatchByDay:", error });
-    }
-};
+// const getPadelMatchByDay = async (req, res, next) => {
+//     try {
+//         const { day } = req.params;
+//         const findPadelMatch = await PadelMatch.find({ day });
+//         resultPadelMatchesByDay(res, findPadelMatch, day);
+//     } catch (error) {
+//         return res.status(400).json({ message: "❌ Fallo en getPadelMatchByDay:", error });
+//     }
+// };
 
 const getPadelMatchByAuthor = async (req, res, next) => {
     try {
@@ -69,7 +107,7 @@ const getPadelMatchByAuthor = async (req, res, next) => {
 const updatePadelMatch = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { day, month, hour, place } = req.body;
+        const { title, location, date, place } = req.body;
         const user = req.user;
 
         const oldPadelMatch = await PadelMatch.findById(id);
@@ -82,7 +120,7 @@ const updatePadelMatch = async (req, res, next) => {
             return res.status(400).json({ message: authorChecked });
         }
 
-        const padelMatchParamsError = ParamsErrorOfPadelMatch(day, month, hour, place);
+        const padelMatchParamsError = ParamsErrorOfPadelMatch(title, location, date, place);
         if (padelMatchParamsError) {
             if (req.file) {
                 deleteImage(req.file?.path);
@@ -135,8 +173,9 @@ const deletePadelMatch = async (req, res, next) => {
 
 module.exports = {
     createPadelMatch,
+    joinUserToPadelMatch,
     getPadelMatches,
-    getPadelMatchByDay,
+    //getPadelMatchByDay,
     getPadelMatchByAuthor,
     updatePadelMatch,
     deletePadelMatch
