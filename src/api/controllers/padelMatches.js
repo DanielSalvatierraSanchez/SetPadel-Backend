@@ -43,25 +43,16 @@ const joinUserToPadelMatch = async (req, res, next) => {
             return res.status(400).json({ message: "Partido no encontrado." });
         }
 
-        if (padelMatch.isCompleted) {
-            return res.status(400).json({ message: "El partido ya está completo." });
+        if (padelMatch.players.length >= 4) {
+            padelMatch.isCompleted = true;
+            return res.status(400).json({ message: "Ya hay 4 jugadores apuntados." });
         }
 
         if (padelMatch.players.includes(userId)) {
             return res.status(400).json({ message: "Ya estás inscrito en este partido." });
         }
 
-        if (padelMatch.players.length >= 4) {
-            padelMatch.isCompleted = true;
-            await padelMatch.save();
-            return res.status(200).json({ message: "Ya hay 4 jugadores apuntados.", padelMatch });
-        }
-
         padelMatch.players.push(userId);
-
-        if (padelMatch.players.length === 4) {
-            padelMatch.isCompleted = true;
-        }
 
         const updatePadelMatch = await padelMatch.save();
 
@@ -74,10 +65,11 @@ const joinUserToPadelMatch = async (req, res, next) => {
 
 const getPadelMatches = async (req, res, next) => {
     try {
-        const allPadelMatches = await PadelMatch.find();
-        return allPadelMatches
-            ? res.status(200).json({ message: "Estos son todos los partidos que hay programados:", allPadelMatches })
-            : res.status(400).json({ message: "No hay ningún partido programado." });
+        const allPadelMatches = await PadelMatch.find().populate("author", "_id name email image");
+        if (allPadelMatches.length == 0) {
+            return res.status(200).json({ message: "❌ No hay ningún partido programado." });
+        }
+        return res.status(200).json({ message: "Estos son todos los partidos que hay programados:", allPadelMatches });
     } catch (error) {
         console.log(error);
         return res.status(400).json({ message: "❌ Fallo en getPadelMatches:" });
