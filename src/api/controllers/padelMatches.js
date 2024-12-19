@@ -40,16 +40,16 @@ const joinUserToPadelMatch = async (req, res, next) => {
 
         const padelMatch = await PadelMatch.findById(id);
         if (!padelMatch) {
-            return res.status(400).json({ message: "Partido no encontrado." });
+            return res.status(404).json({ message: "Partido no encontrado." });
         }
 
         if (padelMatch.players.length >= 4) {
             padelMatch.isCompleted = true;
-            return res.status(400).json({ message: "Ya hay 4 jugadores apuntados." });
+            return res.status(200).json({ message: "Ya hay 4 jugadores apuntados." });
         }
 
         if (padelMatch.players.includes(userId)) {
-            return res.status(400).json({ message: "Ya estás inscrito en este partido." });
+            return res.status(200).json({ message: "Ya estás inscrito en este partido." });
         }
 
         padelMatch.players.push(userId);
