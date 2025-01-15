@@ -9,7 +9,7 @@ const { resultUserDeleted } = require("../../utils/Users/resultUserDeleted");
 const { registerUserControlDuplicated } = require("../../utils/Users/registerUserControlDuplicated");
 const { selectUserData } = require("../../utils/Users/selectUserData");
 const { ParamsErrorOfUser } = require("../../utils/Users/ParamsErrorOfUser");
-
+console;
 const registerUser = async (req, res, next) => {
     try {
         const { name, email, password, phone } = req.body;
@@ -36,13 +36,11 @@ const registerUser = async (req, res, next) => {
             newUser.image = req.file.path;
         }
         const token = generateToken(newUser._id);
-        
+
         const userSaved = await newUser.save();
 
         return res.status(201).json({ message: "Usuario creado correctamente.", user: userSaved, token });
     } catch (error) {
-        console.log(error);
-        
         return res.status(400).json({ message: "❌ Fallo en registerUser:" }, error);
     }
 };
@@ -51,7 +49,7 @@ const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const userLogin = await User.findOne({ email });
-        
+
         if (!userLogin) {
             return res.status(400).json({ message: "Email o Contraseña incorrectos." });
         }

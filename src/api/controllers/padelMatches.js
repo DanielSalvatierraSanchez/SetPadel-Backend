@@ -58,7 +58,6 @@ const joinUserToPadelMatch = async (req, res, next) => {
 
         return res.status(200).json({ message: "Te has inscrito correctamente al partido.", updatePadelMatch });
     } catch (error) {
-        console.log(error);
         return res.status(400).json({ message: "❌ Fallo en joinPadelMatch:" });
     }
 };
@@ -71,7 +70,6 @@ const getPadelMatches = async (req, res, next) => {
         }
         return res.status(200).json({ message: "Estos son todos los partidos que hay programados:", allPadelMatches });
     } catch (error) {
-        console.log(error);
         return res.status(400).json({ message: "❌ Fallo en getPadelMatches:" });
     }
 };
