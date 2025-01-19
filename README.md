@@ -10,9 +10,6 @@ DONE	* Subida de ficheros (por ejemplo: avatares o carteles de eventos)
 DONE	* Controladores que ordenen la información bajo algún criterio
 DONE 	* Controladores que inserten un elemento de una colección en otra
 
-BACK COMPLETADO CONTINUAR CON:
-Continuar con joinPadelMatch...
-
 FUTURE =>
 Probar implementación de la paginación y probar las queries
 Revisar en getPadelMatchByDay para filtrar por un dia en concreto con formato DATE
