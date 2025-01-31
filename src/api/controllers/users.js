@@ -130,8 +130,10 @@ const updateUser = async (req, res, next) => {
             userModify.password = newPassword;
         }
 
-        if (phone.length < 9 || phone.length > 9) {
-            return res.status(400).json({ message: "El teléfono debe de tener 9 dígitos." });
+        if (phone) {
+            if (phone.length < 9 || phone.length > 9) {
+                return res.status(400).json({ message: "El teléfono debe de tener 9 dígitos." });
+            }
         }
 
         if (req.file) {
