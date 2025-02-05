@@ -11,6 +11,7 @@ DONE	* Controladores que ordenen la información bajo algún criterio
 DONE 	* Controladores que inserten un elemento de una colección en otra
 
 FUTURE =>
+En CONTROLLER/PADELMATCHES7JOINUSER => Añadir userName al partido
 Probar implementación de la paginación y probar las queries
 Revisar en getPadelMatchByDay para filtrar por un dia en concreto con formato DATE
 // const findPadelMatch = await PadelMatch.find({ date: new RegExp(date, "i") });

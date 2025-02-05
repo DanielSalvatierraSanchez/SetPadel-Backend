@@ -20,7 +20,7 @@ const createPadelMatch = async (req, res, next) => {
         }
 
         const authorId = await User.findById(req.user);
-        const newPadelMatch = new PadelMatch({ ...req.body, author: authorId._id });
+        const newPadelMatch = new PadelMatch({ ...req.body, author: authorId._id, authorName: authorId.name });
 
         if (req.file) {
             newPadelMatch.image = req.file.path;
@@ -37,6 +37,7 @@ const joinUserToPadelMatch = async (req, res, next) => {
     try {
         const { id } = req.params;
         const userId = req.user._id;
+        const userName = req.user.name;
 
         const padelMatch = await PadelMatch.findById(id);
         if (!padelMatch) {
@@ -52,7 +53,7 @@ const joinUserToPadelMatch = async (req, res, next) => {
             return res.status(200).json({ message: "Ya estás inscrito en este partido." });
         }
 
-        padelMatch.players.push(userId);
+        padelMatch.players.push(userId); // añadir userName
 
         const updatePadelMatch = await padelMatch.save();
 
