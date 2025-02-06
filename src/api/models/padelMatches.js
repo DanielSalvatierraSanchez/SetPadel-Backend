@@ -8,7 +8,7 @@ const padelMatchSchema = new mongoose.Schema(
         place: { type: String, required: false, enum: ["Indoor", "Outdoor"] },
         image: { type: String, default: "../../assets/pista.jpg" },
         author: { type: mongoose.Types.ObjectId, ref: "users" },
-        players: [{ type: mongoose.Types.ObjectId, ref: "users" }], // participantes max: 4
+        players: [{ userId: { type: mongoose.Types.ObjectId, ref: "users" }, userName: { type: String, required: true } }], // participantes max: 4
         isCompleted: { type: Boolean, default: false }
     },
     {

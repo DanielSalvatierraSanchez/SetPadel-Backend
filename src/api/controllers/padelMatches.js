@@ -53,7 +53,7 @@ const joinUserToPadelMatch = async (req, res, next) => {
             return res.status(200).json({ message: "Ya estás inscrito en este partido." });
         }
 
-        padelMatch.players.push(userId); // añadir userName
+        padelMatch.players.push({ userId: userId, userName: userName });
 
         const updatePadelMatch = await padelMatch.save();
 
