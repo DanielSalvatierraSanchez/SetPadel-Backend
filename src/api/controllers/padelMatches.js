@@ -163,6 +163,23 @@ const deletePadelMatch = async (req, res, next) => {
     }
 };
 
+const deleteUserOfPadelMatch = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.body;
+
+        const findUser = await User.findById({ userId });
+        if (!findUser) {
+            return res.status(400).json({ message: "No existe ese usuario." });
+        }
+
+        const userDeleted = await User.findByIdAndDelete(id, { userId }, { new: true });
+        return res.status(200).json({ message: "Usuario eliminado correctamente del partido.", userDeleted });
+    } catch (error) {
+        return res.status(400).json({ message: `❌ Fallo en deleteUserOfPadelMatch: ${error.message}` });
+    }
+};
+
 module.exports = {
     createPadelMatch,
     joinUserToPadelMatch,
@@ -170,5 +187,6 @@ module.exports = {
     //getPadelMatchByDay,
     getPadelMatchByAuthor,
     updatePadelMatch,
-    deletePadelMatch
+    deletePadelMatch,
+    deleteUserOfPadelMatch
 };
