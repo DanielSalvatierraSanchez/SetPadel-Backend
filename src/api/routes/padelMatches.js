@@ -18,7 +18,7 @@ padelMatchesRoutes.get("/getByAuthor/:author", isAuth, getPadelMatchByAuthor);
 padelMatchesRoutes.get("/", isAuth, getPadelMatches);
 padelMatchesRoutes.put("/join/:id", isAuth, joinUserToPadelMatch);
 padelMatchesRoutes.put("/update/:id", isAuth, uploadFolders("Padel_Matches_Of_Appadel").single("image"), updatePadelMatch);
-padelMatchesRoutes.delete("/deleteUserOfPadelMatch/:id", isAuth, deleteUserOfPadelMatch);
+padelMatchesRoutes.put("/deleteUserOfPadelMatch/:id", isAuth, deleteUserOfPadelMatch);
 padelMatchesRoutes.delete("/delete/:id", isAuth, deletePadelMatch);
 
 module.exports = padelMatchesRoutes;

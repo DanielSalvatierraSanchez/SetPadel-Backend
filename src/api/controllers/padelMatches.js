@@ -35,11 +35,11 @@ const createPadelMatch = async (req, res, next) => {
 
 const joinUserToPadelMatch = async (req, res, next) => {
     try {
-        const { matchId } = req.params;
+        const { id } = req.params;
         const userId = req.user._id;
         const userName = req.user.name;
 
-        const padelMatch = await PadelMatch.findById(matchId);
+        const padelMatch = await PadelMatch.findById(id);
         if (!padelMatch) {
             return res.status(404).json({ message: "Partido no encontrado." });
         }
@@ -54,10 +54,8 @@ const joinUserToPadelMatch = async (req, res, next) => {
         }
 
         padelMatch.players.push({ userId, userName });
-        // padelMatch.players.push({ userId: userId, userName: userName });
 
         const updatePadelMatch = await padelMatch.save();
-
         return res.status(200).json({ message: "Te has inscrito correctamente al partido.", updatePadelMatch });
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en joinPadelMatch:" });
@@ -165,45 +163,23 @@ const deletePadelMatch = async (req, res, next) => {
 
 const deleteUserOfPadelMatch = async (req, res, next) => {
     try {
-        const { matchId } = req.params;
-        // const { userId } = req.params;
-        console.log();
-        console.log(matchId);
-        console.log(req);
-        
-        
-        
+        const { id } = req.params;
+        const userId = req.user._id;
 
-        const findPadelMatch = await PadelMatch.findById(matchId);
-        if (!findPadelMatch) {
-            return res.status(400).json({ message: "No existe ese partido." });
+        const padelMatch = await PadelMatch.findById(id);
+        if (!padelMatch) {
+            return res.status(400).json({ message: "Partido no encontrado." });
         }
 
-        const findUser = await User.findById({ userId });
-        if (!findUser) {
-            return res.status(400).json({ message: "No existe ese usuario." });
+        const playerIndex = padelMatch.players.findIndex((player) => player.userId.toString() === userId.toString());
+        if (playerIndex === -1) {
+            return res.status(400).json({ message: "No estás inscrito en este partido." });
         }
-        /*
-                // Verificar si el usuario está en el partido
-                const playerIndex = padelMatch.players.findIndex(
-                    player => player.userId.toString() === userId.toString()
-                );
-        
-                if (playerIndex === -1) {
-                    return res.status(400).json({ 
-                        success: false,
-                        message: "No estás inscrito en este partido." 
-                    });
-                }
-                    */
-        // Eliminar el usuario del array de players
+
         padelMatch.players.splice(playerIndex, 1);
 
-        // Guardar los cambios
-        const updatedMatch = await padelMatch.save();
-
-        // const userDeleted = await User.findByIdAndDelete(matchId, { userId }, { new: true });
-        return res.status(200).json({ message: "Usuario eliminado correctamente del partido.", updatedMatch });
+        const updateUsersOfPadelMatch = await padelMatch.save();
+        return res.status(200).json({ message: "Usuario eliminado correctamente del partido.", updateUsersOfPadelMatch });
     } catch (error) {
         return res.status(400).json({ message: `❌ Fallo en deleteUserOfPadelMatch: ${error.message}` });
     }
