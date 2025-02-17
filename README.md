@@ -11,7 +11,7 @@ DONE _ Controladores que ordenen la información bajo algún criterio
 DONE _ Controladores que inserten un elemento de una colección en otra
 
 FUTURE =>
-Update user no actualiza la img
+Update user no actualiza la img del localstorage
 Probar implementación de la paginación y probar las queries
 Revisar en getPadelMatchByDay para filtrar por un dia en concreto con formato DATE
 // const findPadelMatch = await PadelMatch.find({ date: new RegExp(date, "i") });

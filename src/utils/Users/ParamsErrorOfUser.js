@@ -11,5 +11,9 @@ const ParamsErrorOfUser = (name, password, phone, email) => {
     if (isNaN(phone) || phone.length !== 9) {
         return "El teléfono debe de tener 9 dígitos.";
     }
+    const emailFormat = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailFormat.test(email)) {
+        return "Formato de email inválido";
+    }
 };
 module.exports = { ParamsErrorOfUser };

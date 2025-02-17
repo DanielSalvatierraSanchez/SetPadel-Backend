@@ -9,7 +9,7 @@ const { resultUserDeleted } = require("../../utils/Users/resultUserDeleted");
 const { registerUserControlDuplicated } = require("../../utils/Users/registerUserControlDuplicated");
 const { selectUserData } = require("../../utils/Users/selectUserData");
 const { ParamsErrorOfUser } = require("../../utils/Users/ParamsErrorOfUser");
-console;
+
 const registerUser = async (req, res, next) => {
     try {
         const { name, email, password, phone } = req.body;
@@ -34,7 +34,10 @@ const registerUser = async (req, res, next) => {
         const newUser = new User(req.body);
         if (req.file) {
             newUser.image = req.file.path;
+        } else {
+            newUser.image = "https://cdn-icons-png.flaticon.com/512/1177/1177568.png";
         }
+
         const token = generateToken(newUser._id);
 
         const userSaved = await newUser.save();
