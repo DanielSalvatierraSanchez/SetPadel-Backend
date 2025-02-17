@@ -45,18 +45,18 @@ const joinUserToPadelMatch = async (req, res, next) => {
         }
 
         if (padelMatch.players.includes(userId)) {
-            return res.status(200).json({ message: "Ya estás inscrito en este partido." });
+            return res.status(200).json({ message: "¡Ya estás apuntado!" });
         }
 
         if (padelMatch.players.length >= 4) {
             padelMatch.isCompleted = true;
-            return res.status(200).json({ message: "Ya hay 4 jugadores apuntados." });
+            return res.status(200).json({ message: "¡Partido Completo!" });
         }
 
         padelMatch.players.push({ userId, userName });
 
         const updatePadelMatch = await padelMatch.save();
-        return res.status(200).json({ message: "Te has inscrito correctamente al partido.", updatePadelMatch });
+        return res.status(200).json({ message: "¡Apuntado!", updatePadelMatch });
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en joinPadelMatch:" });
     }
@@ -173,13 +173,13 @@ const deleteUserOfPadelMatch = async (req, res, next) => {
 
         const playerIndex = padelMatch.players.findIndex((player) => player.userId.toString() === userId.toString());
         if (playerIndex === -1) {
-            return res.status(400).json({ message: "No estás inscrito en este partido." });
+            return res.status(400).json({ message: "No estás apuntado." });
         }
 
         padelMatch.players.splice(playerIndex, 1);
 
         const updateUsersOfPadelMatch = await padelMatch.save();
-        return res.status(200).json({ message: "Usuario eliminado correctamente del partido.", updateUsersOfPadelMatch });
+        return res.status(200).json({ message: "¡Te retiraste!", updateUsersOfPadelMatch });
     } catch (error) {
         return res.status(400).json({ message: `❌ Fallo en deleteUserOfPadelMatch: ${error.message}` });
     }
