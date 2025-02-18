@@ -1,6 +1,6 @@
 const ParamsErrorOfUser = (name, password, phone, email) => {
     if (!name || !email || !password || !phone) {
-        return "Todos los campos son obligatorios: Nombre, Email, Contraseña y Teléfono.";
+        return "Todos los campos son obligatorios.";
     }
     if (name.length < 2 || name.length > 20) {
         return "El nombre debe de tener de 2 a 20 caracteres.";
