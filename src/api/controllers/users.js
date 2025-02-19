@@ -107,7 +107,7 @@ const getUserByPhone = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { email, password, phone, padelMatches } = req.body;
+        const { name, email, password, phone, padelMatches } = req.body;
         const user = req.user;
 
         const userChecked = idAndRoleChecked(id, user);
@@ -125,6 +125,14 @@ const updateUser = async (req, res, next) => {
         const userModify = new User(req.body);
         userModify._id = id;
 
+        if (!name && !password && !phone && !req.file) {
+            return res.status(400).json({ message: "No hay cambios pendientes." });
+        }
+        if (name) {
+            if (name.length < 2 || name.length > 20) {
+                return res.status(400).json({ message: "El nombre debe de tener de 2 a 20 caracteres." });
+            }
+        }
         if (password) {
             if (password.length < 8 || password.length > 16) {
                 return res.status(400).json({ message: "La contraseña debe de tener entre 8 y 16 caracteres." });
@@ -132,13 +140,11 @@ const updateUser = async (req, res, next) => {
             const newPassword = bcrypt.hashSync(password, 10);
             userModify.password = newPassword;
         }
-
         if (phone) {
             if (phone.length < 9 || phone.length > 9) {
                 return res.status(400).json({ message: "El teléfono debe de tener 9 dígitos." });
             }
         }
-
         if (req.file) {
             if (oldUser.image) {
                 deleteImage(oldUser.image);
