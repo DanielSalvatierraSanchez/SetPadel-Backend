@@ -74,15 +74,15 @@ const getPadelMatches = async (req, res, next) => {
     }
 };
 
-// const getPadelMatchByDay = async (req, res, next) => {
-//     try {
-//         const { day } = req.params;
-//         const findPadelMatch = await PadelMatch.find({ day });
-//         resultPadelMatchesByDay(res, findPadelMatch, day);
-//     } catch (error) {
-//         return res.status(400).json({ message: "❌ Fallo en getPadelMatchByDay:", error });
-//     }
-// };
+const getPadelMatchByDay = async (req, res, next) => {
+    try {
+        const { day } = req.params;
+        const findPadelMatch = await PadelMatch.find({ day });
+        resultPadelMatchesByDay(res, findPadelMatch, day);
+    } catch (error) {
+        return res.status(400).json({ message: "❌ Fallo en getPadelMatchByDay:", error });
+    }
+};
 
 const getPadelMatchByAuthor = async (req, res, next) => {
     try {
@@ -189,7 +189,7 @@ module.exports = {
     createPadelMatch,
     joinUserToPadelMatch,
     getPadelMatches,
-    //getPadelMatchByDay,
+    getPadelMatchByDay,
     getPadelMatchByAuthor,
     updatePadelMatch,
     deletePadelMatch,

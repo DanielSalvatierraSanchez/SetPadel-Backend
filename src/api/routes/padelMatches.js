@@ -13,7 +13,7 @@ const {
 } = require("../controllers/padelMatches");
 
 padelMatchesRoutes.post("/register", isAuth, uploadFolders("Padel_Matches_Of_Appadel").single("image"), createPadelMatch);
-//padelMatchesRoutes.get("/getByDay/:day", isAuth, getPadelMatchByDay);
+padelMatchesRoutes.get("/getByDay/:day", isAuth, getPadelMatchByDay);
 padelMatchesRoutes.get("/getByAuthor/:author", isAuth, getPadelMatchByAuthor);
 padelMatchesRoutes.get("/", isAuth, getPadelMatches);
 padelMatchesRoutes.put("/join/:id", isAuth, joinUserToPadelMatch);
