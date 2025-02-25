@@ -64,7 +64,7 @@ const joinUserToPadelMatch = async (req, res, next) => {
 
 const getPadelMatches = async (req, res, next) => {
     try {
-        const allPadelMatches = await PadelMatch.find().populate("author", "_id name email image");
+        const allPadelMatches = await PadelMatch.find().populate("author", "_id name email image").sort({ date: 1 });
         if (allPadelMatches.length == 0) {
             return res.status(200).json({ message: "❌ No hay ningún partido programado." });
         }
