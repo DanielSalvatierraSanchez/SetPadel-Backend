@@ -6,6 +6,7 @@ const {
     joinUserToPadelMatch,
     getPadelMatchByDay,
     getPadelMatchByAuthor,
+    getUncompletedPadelMatches,
     getPadelMatches,
     updatePadelMatch,
     deletePadelMatch,
@@ -13,8 +14,9 @@ const {
 } = require("../controllers/padelMatches");
 
 padelMatchesRoutes.post("/register", isAuth, uploadFolders("Padel_Matches_Of_Appadel").single("image"), createPadelMatch);
-padelMatchesRoutes.get("/getByDay/:day", isAuth, getPadelMatchByDay);
+padelMatchesRoutes.get("/getByDay/:date", isAuth, getPadelMatchByDay);
 padelMatchesRoutes.get("/getByAuthor/:author", isAuth, getPadelMatchByAuthor);
+padelMatchesRoutes.get("/getUncompleted", isAuth, getUncompletedPadelMatches);
 padelMatchesRoutes.get("/", isAuth, getPadelMatches);
 padelMatchesRoutes.put("/join/:id", isAuth, joinUserToPadelMatch);
 padelMatchesRoutes.put("/update/:id", isAuth, uploadFolders("Padel_Matches_Of_Appadel").single("image"), updatePadelMatch);

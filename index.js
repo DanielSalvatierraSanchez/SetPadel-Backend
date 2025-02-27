@@ -13,8 +13,8 @@ connnectCloudinary();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/v1/appadel/matches", padelMatchesRoutes);
-app.use("/api/v1/appadel/users", usersRoutes);
+app.use("/api/v1/setpadel/matches", padelMatchesRoutes);
+app.use("/api/v1/setpadel/users", usersRoutes);
 
 app.use("*", (req, res, next) => {
     return res.status(404).json("✅ Route Not Found");

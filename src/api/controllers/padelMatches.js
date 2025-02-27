@@ -44,16 +44,17 @@ const joinUserToPadelMatch = async (req, res, next) => {
             return res.status(404).json({ message: "Partido no encontrado." });
         }
 
-        if (padelMatch.players.includes(userId)) {
+        if (padelMatch.players.some((player) => player.userId.toString() === userId.toString())) {
             return res.status(200).json({ message: "¡Ya estás apuntado!" });
         }
 
-        if (padelMatch.players.length >= 4) {
+        padelMatch.players.push({ userId, userName });
+
+        if (padelMatch.players.length === 4) {
             padelMatch.isCompleted = true;
+            await padelMatch.save();
             return res.status(200).json({ message: "¡Partido Completo!" });
         }
-
-        padelMatch.players.push({ userId, userName });
 
         const updatePadelMatch = await padelMatch.save();
         return res.status(200).json({ message: "¡Apuntado!", updatePadelMatch });
@@ -74,10 +75,42 @@ const getPadelMatches = async (req, res, next) => {
     }
 };
 
+const getUncompletedPadelMatches = async (req, res, next) => {
+    try {
+        const uncompletedPadelMatches = await PadelMatch.find({ isCompleted: false }).sort({ date: 1 });
+        // .populate("author", "_id name email image")
+        // .sort({ date: 1 });
+
+        // const filteredPadelMatches = uncompletedPadelMatches.filter(match => match.players.length < 4)
+
+        if (uncompletedPadelMatches.length === 0) {
+            return res.status(200).json({
+                message: "Todos los partidos estan completos.",
+                uncompletedPadelMatches: []
+            });
+        }
+
+        return res.status(200).json({
+            message: "Estos son los partidos disponibles para unirse:",
+            uncompletedPadelMatches
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: "❌ Fallo en getUncompletedPadelMatches:",
+            error: error.message
+        });
+    }
+};
+
 const getPadelMatchByDay = async (req, res, next) => {
     try {
-        const { day } = req.params;
-        const findPadelMatch = await PadelMatch.find({ day });
+        const { date } = req.params;
+        if (!day) {
+            return res.status(400).json({ message: "No has introducido ningún día." });
+        }
+
+        const findPadelMatch = await PadelMatch.find().includes({ date });
+        console.log("BACK findPadelMatch => ", findPadelMatch);
         resultPadelMatchesByDay(res, findPadelMatch, day);
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en getPadelMatchByDay:", error });
@@ -189,6 +222,7 @@ module.exports = {
     createPadelMatch,
     joinUserToPadelMatch,
     getPadelMatches,
+    getUncompletedPadelMatches,
     getPadelMatchByDay,
     getPadelMatchByAuthor,
     updatePadelMatch,
