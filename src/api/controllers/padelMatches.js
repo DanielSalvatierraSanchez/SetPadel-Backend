@@ -120,8 +120,13 @@ const getPadelMatchByDay = async (req, res, next) => {
 const getPadelMatchByAuthor = async (req, res, next) => {
     try {
         const { author } = req.params;
-        const findPadelMatch = await PadelMatch.find({ author });
-        resultPadelMatchesByAuthor(res, findPadelMatch, author);
+        console.log("req.params GET PM BY AUTHOR => ", req.params);
+        console.log(author);
+
+        const authorId = req.user.id;
+        const authorName = req.user.name;
+        const findPadelMatch = await PadelMatch.find({ authorId });
+        resultPadelMatchesByAuthor(res, findPadelMatch, authorName);
     } catch (error) {
         return res.status(400).json({ message: "❌ Fallo en getPadelMatchByAuthor:", error });
     }
@@ -178,6 +183,13 @@ const deletePadelMatch = async (req, res, next) => {
             return res.status(400).json({ message: "No existe ese partido." });
         }
 
+        // if (findPadelMatch.author.toString() !== req.user.id) {
+        //     return res.status(400).json({ message: "No tienes permiso para eliminar este partido." });
+        // }
+        // if (findPadelMatch.image && findPadelMatch.image !== "../../assets/pista.jpg") {
+        //     deleteImage(findPadelMatch.image);
+        // }
+
         const authorPadelMatch = await User.findById(req.user);
         const authorIDPadelMatch = findPadelMatch.author.toString();
 
@@ -186,7 +198,7 @@ const deletePadelMatch = async (req, res, next) => {
             return res.status(400).json({ message: userChecked });
         }
 
-        const padelMatchDeleted = await PadelMatch.findByIdAndDelete(id);
+        const padelMatchDeleted = await PadelMatch.findByIdAndDelete(matchId);
         deleteImage(padelMatchDeleted.image);
         resultPadelMatchDeleted(res, padelMatchDeleted);
     } catch (error) {
