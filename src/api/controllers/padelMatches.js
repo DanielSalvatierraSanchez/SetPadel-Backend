@@ -29,7 +29,7 @@ const createPadelMatch = async (req, res, next) => {
         const padelMatchSaved = await newPadelMatch.save();
         return res.status(201).json({ message: "Partido creado.", padelMatchSaved });
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en createPadelMatch:", error });
+        return res.status(400).json({ message: "❌ Fallo en createPadelMatch:", error: error.message });
     }
 };
 
@@ -59,7 +59,7 @@ const joinUserToPadelMatch = async (req, res, next) => {
         const updatePadelMatch = await padelMatch.save();
         return res.status(200).json({ message: "¡Apuntado!", updatePadelMatch });
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en joinPadelMatch:" });
+        return res.status(400).json({ message: "❌ Fallo en joinPadelMatch:", error: error.message });
     }
 };
 
@@ -71,7 +71,7 @@ const getPadelMatches = async (req, res, next) => {
         }
         return res.status(200).json({ message: "Estos son todos los partidos que hay programados:", allPadelMatches });
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en getPadelMatches:" });
+        return res.status(400).json({ message: "❌ Fallo en getPadelMatches:", error: error.message });
     }
 };
 
@@ -120,15 +120,12 @@ const getPadelMatchByDay = async (req, res, next) => {
 const getPadelMatchByAuthor = async (req, res, next) => {
     try {
         const { author } = req.params;
-        console.log("req.params GET PM BY AUTHOR => ", req.params);
-        console.log(author);
-
-        const authorId = req.user.id;
         const authorName = req.user.name;
-        const findPadelMatch = await PadelMatch.find({ authorId });
+
+        const findPadelMatch = await PadelMatch.find({ author }).sort({ date: 1 });
         resultPadelMatchesByAuthor(res, findPadelMatch, authorName);
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en getPadelMatchByAuthor:", error });
+        return res.status(400).json({ message: "❌ Fallo en getPadelMatchByAuthor:", error: error.message });
     }
 };
 
@@ -170,7 +167,7 @@ const updatePadelMatch = async (req, res, next) => {
         const padelMatchUpdated = await PadelMatch.findByIdAndUpdate(matchId, padelMatchModify, { new: true });
         return res.status(200).json({ message: "Partido actualizado correctamente.", padelMatchUpdated });
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en updatePadelMatch:", error });
+        return res.status(400).json({ message: "❌ Fallo en updatePadelMatch:", error: error.message });
     }
 };
 
@@ -202,7 +199,7 @@ const deletePadelMatch = async (req, res, next) => {
         deleteImage(padelMatchDeleted.image);
         resultPadelMatchDeleted(res, padelMatchDeleted);
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en deletePadelMatch:", error });
+        return res.status(400).json({ message: "❌ Fallo en deletePadelMatch:", error: error.message });
     }
 };
 
@@ -226,7 +223,7 @@ const deleteUserOfPadelMatch = async (req, res, next) => {
         const updateUsersOfPadelMatch = await padelMatch.save();
         return res.status(200).json({ message: "¡Te retiraste!", updateUsersOfPadelMatch });
     } catch (error) {
-        return res.status(400).json({ message: `❌ Fallo en deleteUserOfPadelMatch: ${error.message}` });
+        return res.status(400).json({ message: `❌ Fallo en deleteUserOfPadelMatch: ${error.message}`, error: error.message });
     }
 };
 
