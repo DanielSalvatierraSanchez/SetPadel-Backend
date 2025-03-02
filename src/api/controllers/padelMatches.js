@@ -173,12 +173,13 @@ const updatePadelMatch = async (req, res, next) => {
 
 const deletePadelMatch = async (req, res, next) => {
     try {
-        const { matchId } = req.params;
+        const { id } = req.params;
 
-        const findPadelMatch = await PadelMatch.findById(matchId);
+        const findPadelMatch = await PadelMatch.findById(id);
         if (!findPadelMatch) {
             return res.status(400).json({ message: "No existe ese partido." });
         }
+        console.log("findPadelMatch", findPadelMatch);
 
         // if (findPadelMatch.author.toString() !== req.user.id) {
         //     return res.status(400).json({ message: "No tienes permiso para eliminar este partido." });
@@ -187,15 +188,17 @@ const deletePadelMatch = async (req, res, next) => {
         //     deleteImage(findPadelMatch.image);
         // }
 
-        const authorPadelMatch = await User.findById(req.user);
-        const authorIDPadelMatch = findPadelMatch.author.toString();
+        // const authorPadelMatch = await User.findById(req.user);
+        // const authorIDPadelMatch = findPadelMatch.author.toString();
 
-        const userChecked = idAndRoleChecked(authorIDPadelMatch, authorPadelMatch);
-        if (userChecked) {
-            return res.status(400).json({ message: userChecked });
-        }
+        // const userChecked = idAndRoleChecked(authorIDPadelMatch, authorPadelMatch);
+        // console.log(userChecked);
+        
+        // if (!userChecked) {
+        //     return res.status(400).json({ message: userChecked });
+        // }
 
-        const padelMatchDeleted = await PadelMatch.findByIdAndDelete(matchId);
+        const padelMatchDeleted = await PadelMatch.findByIdAndDelete(id);
         deleteImage(padelMatchDeleted.image);
         resultPadelMatchDeleted(res, padelMatchDeleted);
     } catch (error) {
