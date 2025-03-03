@@ -44,7 +44,7 @@ const registerUser = async (req, res, next) => {
 
         return res.status(201).json({ message: "Usuario creado correctamente.", user: userSaved, token });
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en registerUser:" }, error);
+        return res.status(400).json({ message: "❌ Fallo en registerUser:", error: error.message });
     }
 };
 
@@ -63,7 +63,7 @@ const loginUser = async (req, res, next) => {
             return res.status(400).json({ message: "Email o Contraseña incorrectos." });
         }
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en loginUser:" }, error);
+        return res.status(400).json({ message: "❌ Fallo en loginUser:", error: error.message });
     }
 };
 
@@ -73,7 +73,7 @@ const getAllUsers = async (req, res, next) => {
         const allUsers = await User.find().select(selectUserData(user)).populate("padelMatches");
         return res.status(200).json({ message: "Listado completo de usuarios:", allUsers });
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en getAllUsers:" }, error);
+        return res.status(400).json({ message: "❌ Fallo en getAllUsers:", error: error.message });
     }
 };
 
@@ -86,7 +86,7 @@ const getUserByName = async (req, res, next) => {
             .populate("padelMatches");
         resultUsersByName(res, searchUserByName, name);
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en getUserByName:" }, error);
+        return res.status(400).json({ message: "❌ Fallo en getUserByName:", error: error.message });
     }
 };
 
@@ -100,7 +100,7 @@ const getUserByPhone = async (req, res, next) => {
         const searchUserByPhone = await User.find({ phone }).select(selectUserData(user)).populate("padelMatches");
         resultUsersByPhone(res, searchUserByPhone, phone);
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en getUserByPhone:" }, error);
+        return res.status(400).json({ message: "❌ Fallo en getUserByPhone:", error: error.message });
     }
 };
 
@@ -155,7 +155,7 @@ const updateUser = async (req, res, next) => {
         const userUpdated = await User.findByIdAndUpdate(id, userModify, { new: true });
         return res.status(200).json({ message: "Datos del usuario actualizados correctamente.", userUpdated });
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en updateUser:" }, error);
+        return res.status(400).json({ message: "❌ Fallo en updateUser:", error: error.message });
     }
 };
 
@@ -173,7 +173,7 @@ const deleteUser = async (req, res, next) => {
         deleteImage(userDeleted.image);
         resultUserDeleted(res, userDeleted);
     } catch (error) {
-        return res.status(400).json({ message: "❌ Fallo en deleteUser:" }, error);
+        return res.status(400).json({ message: "❌ Fallo en deleteUser:", error: error.message });
     }
 };
 

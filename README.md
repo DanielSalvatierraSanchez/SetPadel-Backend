@@ -9,5 +9,3 @@ DONE _ Protege las rutas que permiten acciones exclusivas para usuarios autentic
 DONE _ Subida de ficheros (por ejemplo: avatares o carteles de eventos)
 DONE _ Controladores que ordenen la información bajo algún criterio
 DONE \_ Controladores que inserten un elemento de una colección en otra
-
-deletePM revisar el checked del user
