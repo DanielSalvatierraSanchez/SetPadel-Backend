@@ -1,4 +1,4 @@
-process.loadEnvFile();
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { connectDB } = require("./src/config/db");
