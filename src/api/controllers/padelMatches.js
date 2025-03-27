@@ -36,22 +36,17 @@ const createPadelMatch = async (req, res, next) => {
 const joinUserToPadelMatch = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { _id, name, image } = req.user;
-        // console.log(req.user);
         const userId = req.user._id;
         const userName = req.user.name;
         const userImage = req.user.image;
 
         const padelMatch = await PadelMatch.findById(id);
-        // console.log(padelMatch);
-        // console.log(userId);
-        // console.log(_id);
 
         if (!padelMatch) {
             return res.status(404).json({ message: "Partido no encontrado." });
         }
 
-        if (padelMatch.players.some((player) => player._id.toString() === _id.toString())) {
+        if (padelMatch.players.some((player) => player.userId.toString() === userId.toString())) {
             return res.status(200).json({ message: "¡Ya estás apuntado!" });
         }
 
@@ -59,7 +54,7 @@ const joinUserToPadelMatch = async (req, res, next) => {
             return res.status(200).json({ message: "¡Partido Completo!" });
         }
 
-        padelMatch.players.push({ _id, name, image });
+        padelMatch.players.push({ userId, userName, userImage });
 
         if (padelMatch.players.length === 4) {
             padelMatch.isCompleted = true;
