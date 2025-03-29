@@ -8,6 +8,7 @@ usersRoutes.post("/login", loginUser);
 usersRoutes.get("/getByName/:name", isAuth, getUserByName);
 usersRoutes.get("/getByPhone/:phone", isAuth, getUserByPhone);
 usersRoutes.get("/", isAuth, getAllUsers);
+usersRoutes.get("/verify_token", isAuth);
 usersRoutes.put("/update/:id", isAuth, uploadFolders("Users_Of_Appadel").single("image"), updateUser);
 usersRoutes.delete("/delete/:id", isAuth, deleteUser);
 
