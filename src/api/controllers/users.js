@@ -67,6 +67,17 @@ const loginUser = async (req, res, next) => {
     }
 };
 
+const verifyTokenUser = async (req, res, next) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: "❌ Token o usuario no válido" });
+        }
+        return res.status(200).json({ message: "✅ Token válido", user: req.user });
+    } catch (error) {
+        return res.status(400).json({ message: "❌ Fallo en verifyTokenUser:", error: error.message });
+    }
+};
+
 const getAllUsers = async (req, res, next) => {
     try {
         const user = req.user;
@@ -177,4 +188,4 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
-module.exports = { registerUser, loginUser, getAllUsers, getUserByName, getUserByPhone, updateUser, deleteUser };
+module.exports = { registerUser, loginUser, verifyTokenUser, getAllUsers, getUserByName, getUserByPhone, updateUser, deleteUser };
